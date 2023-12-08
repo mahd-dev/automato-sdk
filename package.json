@@ -1,0 +1,17 @@
+{
+    "name": "automato-sdk",
+    "version": "1.0.0",
+    "description": "SDK for the Automato platform",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc",
+        "prepublish": "npm run build"
+    },
+    "author": "mahd.group",
+    "license": "MIT",
+    "keywords": [
+        "automato",
+        "sdk",
+        "api"
+    ]
+}
