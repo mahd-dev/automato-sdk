@@ -53,10 +53,15 @@ Contributions are welcome! Please read our contributing guidelines to get starte
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-Support
 
-<!-- If you have any questions or issues, please open an issue on the GitHub repository or contact [support@email.com].
-Additional Information
+## Support
+If you have any questions or issues, please open an issue on the [GitHub repository](https://github.com/mahd-dev/automato-sdk) or contact contact@mahd.dev.
 
-    [Link to official Automato documentation or resources]
-    [Any other relevant links or documentatio -->
+## GitHub Repository
+
+The source code for Automato SDK is available on GitHub. Visit our [GitHub repository](https://github.com/mahd-dev/automato-sdk) to access the code, report issues, or make contributions.
+
+## Additional Information
+
+    Official website :
+    https://automato.pages.dev/
