@@ -36,19 +36,15 @@ const props = [
 sdk.identify(props)
    .then(token => console.log("Token:", token))
    .catch(error => console.error("Error:", error));
-
-// Additional examples and usage instructions...
-
-API Reference
-
-    identify(props: Prop[], token?: string): Promise<string>
-        [Description of the identify method]
-
-    upsertContactProp(prop: Prop, token: string): Promise<void>
-        [Description of the upsertContactProp method]
-
-    [Include other methods and their descriptions]
 ```
+
+## API Reference
+
+identify(props: Prop[], token?: string): Promise<string>
+    Use identify to upsert contact required fields and get token. 
+
+upsertContactProp(prop: Prop, token: string): Promise<void>
+    Create or update contact props
 
 ## Contributing
 
