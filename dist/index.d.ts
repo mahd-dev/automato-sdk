@@ -1,18 +1,40 @@
-type ValueType = "string" | "date" | "datetime-local" | "time" | "number" | "boolean";
-interface Prop {
+export type ValueType = "string" | "date" | "datetime-local" | "time" | "number" | "boolean";
+export interface ContactProp {
     key: string;
     value_type: ValueType;
     value: string | number | boolean | Date;
 }
+export interface EventProp {
+    type: ValueType;
+    value: string | number | boolean | Date;
+}
+export interface EventProps {
+    [key: string]: {
+        type: ValueType;
+        value: string | number | boolean | Date;
+    };
+}
+export interface AuthPayload {
+    api_key: string;
+    props?: ContactProp[];
+}
+export interface EventPayload {
+    api_key: string;
+    event_name: string;
+    event_date: string;
+    props: EventProps;
+}
 export default class AutomatoSDK {
-    private hostName;
-    private apiKey;
-    constructor(apiKey: string, hostName: string);
+    hostName: string;
+    apiKey: string;
+    token?: string;
+    constructor(apiKey: string, hostName: string, token?: string);
     getTokenFromCookies(req: Request): string | null;
     setTokenCookie: (response: Response, token: string) => Response;
     clearTokenCookie: (response: Response) => Response;
-    validateProps(props: Prop[]): void;
-    identify(props?: Prop[], token?: string): Promise<string>;
-    upsertContactProp(bearerToken: string, prop: Prop): Promise<void>;
+    validateContactProps(props: ContactProp[]): void;
+    validateEventProps(eventProps: EventProps): void;
+    identify(props?: ContactProp[], token?: string): Promise<string>;
+    createEvent(eventName: string, eventDate: string, eventProps?: EventProps): Promise<string>;
+    upsertContactProp(bearerToken: string, prop: ContactProp): Promise<void>;
 }
-export {};

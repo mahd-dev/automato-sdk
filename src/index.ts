@@ -1,4 +1,4 @@
-type ValueType =
+export type ValueType =
   | "string"
   | "date"
   | "datetime-local"
@@ -6,24 +6,45 @@ type ValueType =
   | "number"
   | "boolean";
 
-interface Prop {
+export interface ContactProp {
   key: string;
   value_type: ValueType;
   value: string | number | boolean | Date; // Adjust based on ValueType
 }
 
-interface AuthPayload {
+export interface EventProp {
+  type: ValueType;
+  value: string | number | boolean | Date;
+}
+
+export interface EventProps {
+  [key: string]: {
+    type: ValueType;
+    value: string | number | boolean | Date;
+  };
+}
+
+export interface AuthPayload {
   api_key: string;
-  props?: Prop[];
+  props?: ContactProp[];
+}
+
+export interface EventPayload {
+  api_key: string;
+  event_name: string;
+  event_date: string;
+  props: EventProps;
 }
 
 export default class AutomatoSDK {
-  private hostName: string;
-  private apiKey: string;
+  public hostName: string;
+  public apiKey: string;
+  public token?: string;
 
-  constructor(apiKey: string, hostName: string) {
+  constructor(apiKey: string, hostName: string, token?: string) {
     this.apiKey = apiKey;
     this.hostName = hostName;
+    this.token = token ? `Bearer ${token}` : undefined;
   }
 
   public getTokenFromCookies(req: Request): string | null {
@@ -57,13 +78,20 @@ export default class AutomatoSDK {
     return response;
   };
 
-  public validateProps(props: Prop[]): void {
+  public validateContactProps(props: ContactProp[]): void {
     // TODO : Validation logic here
   }
 
-  public async identify(props: Prop[] = [], token?: string): Promise<string> {
+  public validateEventProps(eventProps: EventProps): void {
+    // TODO : Validation logic here
+  }
+
+  public async identify(
+    props: ContactProp[] = [],
+    token?: string
+  ): Promise<string> {
     const endpoint = `${this.hostName}/auth/contacts/identify`;
-    this.validateProps(props);
+    this.validateContactProps(props);
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
@@ -103,9 +131,55 @@ export default class AutomatoSDK {
     }
   }
 
+  public async createEvent(
+    eventName: string,
+    eventDate: string,
+    eventProps: EventProps = {}
+  ): Promise<string> {
+    const endpoint = `${this.hostName}/events/create-new`;
+    this.validateEventProps(eventProps);
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    headers["Authorization"] = this.token!;
+
+    const payload: EventPayload = {
+      api_key: this.apiKey,
+      event_name: eventName,
+      event_date: eventDate,
+      props: eventProps,
+    };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "Error communicating with the API"
+        );
+      }
+
+      const data = await response.json();
+      if (data.status === "success") {
+        return data.event_id;
+      } else {
+        throw new Error(data.message || "Unknown error occurred");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async upsertContactProp(
     bearerToken: string,
-    prop: Prop
+    prop: ContactProp
   ): Promise<void> {
     const endpoint = `${this.hostName}/contact-props/upsert`;
 

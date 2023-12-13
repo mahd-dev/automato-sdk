@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class AutomatoSDK {
-    constructor(apiKey, hostName) {
+    constructor(apiKey, hostName, token) {
         this.setTokenCookie = (response, token) => {
             response.headers.append("Set-Cookie", `automato_token=${token}; HttpOnly; Secure; Path=/;`);
             return response;
@@ -21,6 +21,7 @@ class AutomatoSDK {
         };
         this.apiKey = apiKey;
         this.hostName = hostName;
+        this.token = token ? `Bearer ${token}` : undefined;
     }
     getTokenFromCookies(req) {
         const cookieHeader = req.headers.get("Cookie");
@@ -33,13 +34,16 @@ class AutomatoSDK {
         const cookies = new Map(cookiePairs);
         return cookies.get("automato_token") || null;
     }
-    validateProps(props) {
+    validateContactProps(props) {
+        // TODO : Validation logic here
+    }
+    validateEventProps(eventProps) {
         // TODO : Validation logic here
     }
     identify(props = [], token) {
         return __awaiter(this, void 0, void 0, function* () {
             const endpoint = `${this.hostName}/auth/contacts/identify`;
-            this.validateProps(props);
+            this.validateContactProps(props);
             const headers = {
                 "Content-Type": "application/json",
             };
@@ -63,6 +67,43 @@ class AutomatoSDK {
                 const data = yield response.json();
                 if (data.status === "success") {
                     return data.token;
+                }
+                else {
+                    throw new Error(data.message || "Unknown error occurred");
+                }
+            }
+            catch (error) {
+                throw error;
+            }
+        });
+    }
+    createEvent(eventName, eventDate, eventProps = {}) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const endpoint = `${this.hostName}/events/create-new`;
+            this.validateEventProps(eventProps);
+            const headers = {
+                "Content-Type": "application/json",
+            };
+            headers["Authorization"] = this.token;
+            const payload = {
+                api_key: this.apiKey,
+                event_name: eventName,
+                event_date: eventDate,
+                props: eventProps,
+            };
+            try {
+                const response = yield fetch(endpoint, {
+                    method: "POST",
+                    headers: headers,
+                    body: JSON.stringify(payload),
+                });
+                if (!response.ok) {
+                    const errorData = yield response.json();
+                    throw new Error(errorData.message || "Error communicating with the API");
+                }
+                const data = yield response.json();
+                if (data.status === "success") {
+                    return data.event_id;
                 }
                 else {
                     throw new Error(data.message || "Unknown error occurred");

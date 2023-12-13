@@ -24,9 +24,9 @@ yarn add automato-sdk
 Here's a quick example to get you started:
 
 ```bash
-import { AutomatoSDK } from 'automato-sdk';
+import AutomatoSDK from 'automato-sdk';
 
-const sdk = new AutomatoSDK("https://api.automato.com");
+const sdk = new AutomatoSDK("MY_SECRET_KEY", "https://api.automato.pro");
 
 // Using the identify function
 const props = [
@@ -64,4 +64,4 @@ The source code for Automato SDK is available on GitHub. Visit our [GitHub repos
 ## Additional Information
 
     Official website :
-    https://automato.pages.dev/
+    https://automato.pro/
