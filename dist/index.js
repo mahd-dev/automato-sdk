@@ -83,11 +83,10 @@ class AutomatoSDK {
             this.validateEventProps(eventProps);
             const headers = {
                 "Content-Type": "application/json",
+                Authorization: this.token,
             };
-            headers["Authorization"] = this.token;
             const payload = {
-                api_key: this.apiKey,
-                event_name: eventName,
+                name: eventName,
                 event_date: eventDate,
                 props: eventProps,
             };
@@ -114,12 +113,12 @@ class AutomatoSDK {
             }
         });
     }
-    upsertContactProp(bearerToken, prop) {
+    upsertContactProp(prop) {
         return __awaiter(this, void 0, void 0, function* () {
             const endpoint = `${this.hostName}/contact-props/upsert`;
             const headers = {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${bearerToken}`,
+                Authorization: this.token,
             };
             try {
                 const response = yield fetch(endpoint, {

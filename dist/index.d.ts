@@ -19,8 +19,7 @@ export interface AuthPayload {
     props?: ContactProp[];
 }
 export interface EventPayload {
-    api_key: string;
-    event_name: string;
+    name: string;
     event_date: string;
     props: EventProps;
 }
@@ -36,5 +35,5 @@ export default class AutomatoSDK {
     validateEventProps(eventProps: EventProps): void;
     identify(props?: ContactProp[], token?: string): Promise<string>;
     createEvent(eventName: string, eventDate: string, eventProps?: EventProps): Promise<string>;
-    upsertContactProp(bearerToken: string, prop: ContactProp): Promise<void>;
+    upsertContactProp(prop: ContactProp): Promise<void>;
 }

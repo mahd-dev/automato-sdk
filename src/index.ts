@@ -30,8 +30,7 @@ export interface AuthPayload {
 }
 
 export interface EventPayload {
-  api_key: string;
-  event_name: string;
+  name: string;
   event_date: string;
   props: EventProps;
 }
@@ -141,13 +140,11 @@ export default class AutomatoSDK {
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
+      Authorization: this.token!,
     };
 
-    headers["Authorization"] = this.token!;
-
     const payload: EventPayload = {
-      api_key: this.apiKey,
-      event_name: eventName,
+      name: eventName,
       event_date: eventDate,
       props: eventProps,
     };
@@ -178,14 +175,13 @@ export default class AutomatoSDK {
   }
 
   public async upsertContactProp(
-    bearerToken: string,
     prop: ContactProp
   ): Promise<void> {
     const endpoint = `${this.hostName}/contact-props/upsert`;
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${bearerToken}`,
+      Authorization: this.token!,
     };
 
     try {
